@@ -10,25 +10,25 @@
 
 
 typedef	char		VertexType;
-typedef int 		VRType; 
-typedef int 		Status; 
-typedef enum {TRUE, FALSE} bool;
+typedef	int			VRType; 
+typedef	int			Status; 
+typedef	enum {TRUE, FALSE} bool;
 //定义辅助数组，记录顶点U到V-U大的代价最小的边 
 struct {
-	int	adjvex;
+	int			adjvex;
 	VRType		lowcost;
 }closeedge[MAX_VERTEX_NUM]; 
 
 //------------图的数组（邻接矩阵）存储表示---------------// 
 typedef struct{
-	VertexType vexs[MAX_VERTEX_NUM];				//顶点向量 
-	VRType	arcs[MAX_VERTEX_NUM][MAX_VERTEX_NUM];	//邻接矩阵 
-	int     vernum,arcnum;							//顶点和弧数 
+	VertexType 	vexs[MAX_VERTEX_NUM];				//顶点向量 
+	VRType		arcs[MAX_VERTEX_NUM][MAX_VERTEX_NUM];	//邻接矩阵 
+	int     	vernum,arcnum;							//顶点和弧数 
 }MAGraph;
 
-bool visited[MAX_VERTEX_NUM];						/*已查找到最短路径的顶点的标志组，visited[v]=1表示已找到从V0到v的最短距离，visited[v]=0表示还未找到从V0到v的最短距离*/
-int Value[MAX_VERTEX_NUM];							/* 用于存储到各点最短路径的权值和 */
-int Path[MAX_VERTEX_NUM];							//用于存储最短路径下标的数组,,Path[j]表示j的前驱 
+bool	visited[MAX_VERTEX_NUM];						/*已查找到最短路径的顶点的标志组，visited[v]=1表示已找到从V0到v的最短距离，visited[v]=0表示还未找到从V0到v的最短距离*/
+int		Value[MAX_VERTEX_NUM];							/* 用于存储到各点最短路径的权值和 */
+int		Path[MAX_VERTEX_NUM];							//用于存储最短路径下标的数组,,Path[j]表示j的前驱 
 
 //构造无向网
 Status CreateDN(MAGraph *g){
