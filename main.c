@@ -136,19 +136,29 @@ void ShortestPath(MAGraph *g, int v0){
 
 void PrintPath(MAGraph *g){
 	int i , j ;
-	for( i = 0 ;i < g->vernum ; i++){
-		
-		printf("\n%c-->%c weight:%d,path:", g->vexs[0] , g->vexs[i] ,Value[i]);
-		j = i;
-		printf("%c ", g->vexs[j]);
-		while(Path[j] != -1)
-		{
-			printf("%c ", g->vexs[Path[j]]);	
-			j=Path[j];
+	for( i = 0 ; i < g->vernum ; i++){		
+		if(Value[i] == INFINITY){
+			printf("\n%c-->%c ÎÞÍ¨Â·", g->vexs[0] , g->vexs[i] );
 		}
-		printf("%c ", g->vexs[0]);
-		printf("\n");
+		else{
+			printf("\n%c-->%c weight:%d,path:", g->vexs[0] , g->vexs[i] ,Value[i]);
+			j = i;
+			if( j != 0)
+				printf("%c ", g->vexs[j]);
+			
+			while(Path[j] != -1)
+			{
+				printf("%c ", g->vexs[Path[j]]);	
+				j = Path[j];
+			}
+			
+			printf("%c ", g->vexs[0]);
+			
+			printf("\n");
+		} 
+		
 	}
+	
 }
 
 
