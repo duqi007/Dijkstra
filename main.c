@@ -13,6 +13,10 @@ typedef	char		VertexType;
 typedef	int			VRType; 
 typedef	int			Status; 
 typedef	enum {TRUE, FALSE} bool;
+typedef int Patharc[MAX_VERTEX_NUM][MAX_VERTEX_NUM];/* 用于存储最短路径前驱的矩阵数组 ,，Patharc[V0][V]表示从指定结点v0到v的最短路径的前驱*/
+typedef int ShortPathTable[MAX_VERTEX_NUM][MAX_VERTEX_NUM]; /* 用于存储到各点最短路径的权值和的矩阵 数组*/
+
+
 //定义辅助数组，记录顶点U到V-U大的代价最小的边 
 struct {
 	int			adjvex;
@@ -130,11 +134,11 @@ void ShortestPath(MAGraph *g, int v0){
 			
 		}
 	}
-	printf("Dijkstra\n");
+	printf("Dijstra从顶点%c到各个顶点的最短路径为：\n", g->vexs[v0]);
 	
 } 
 
-void PrintPath(MAGraph *g){
+void PrintDijstraPath(MAGraph *g){
 	int i , j ;
 	for( i = 0 ; i < g->vernum ; i++){		
 		if(Value[i] == INFINITY){
@@ -160,15 +164,89 @@ void PrintPath(MAGraph *g){
 	}
 	
 }
+//弗洛伊德算法求各个顶点之间的最短路径 
+void ShortestPath_FLOYD(MAGraph *g, Patharc *P,ShortPathTable *D){
+	
+	int i = 0 , j = 0 , k = 0 ;
+	
+	for(i = 0 ; i < g->vernum ; i++){
+		for(j = 0 ; j < g->vernum ; j++){
+			
+			(*D)[i][j] = g->arcs[i][j];    /*初始化最短路径矩阵数组*/
+			
+			(*P)[i][j] = j;                /*初始化最短路径前驱数组*/
+			
+		}
+	}
+	for(k = 0 ; k < g->vernum ; k++){
+		for(i = 0 ; i < g->vernum ; i++){
+			for(j = 0 ; j < g->vernum ; j++){
+				
+				if((*D)[i][j] > ((*D)[i][k] + (*D)[k][j]))				//从i到j经过k的路径更短 
+				{
+					(*D)[i][j] = ((*D)[i][k]+(*D)[k][j]);
+					(*P)[i][j] = (*P)[i][k];
+				} 	
+			}
+		}
+	}
+	
+	
+} 
 
+void PrintFLOYDPath(MAGraph *g , Patharc *P,ShortPathTable *D){
+	
+	int i , j , k ;
+	printf("\nFLOYD各个顶点之间的最短路径:\n"); 
+	for(i = 0;i< g->vernum ;i++)
+	{
+		for(j = 0;j< g->vernum ;j++)
+		{
+			if(i == j){
+				printf("\n%c--%c weight: 0, path: 自身 ",g->vexs[i],g->vexs[j]);
+			}
+			else{
+				if((*D)[i][j] >= INFINITY){
+					printf("\n%c--%c 无通路  ",g->vexs[i],g->vexs[j]);
+				}
+				else{
+					printf("\n%c--%c weight:%2d, path: ",g->vexs[i],g->vexs[j],(*D)[i][j]);
+					k = (*P)[i][j];
+					printf("%2c ",g->vexs[i]);
+					while(k != j)
+					{
+						printf("->%2c ", g->vexs[k]);
+						k=(*P)[k][j];
+					}
+					printf("->%2c ",g->vexs[j]);	
+				}				
+			} 			
+		}
+		printf("\n");
+	}
+	printf("\n最短路径前驱矩阵数组:\n");
+	for(i = 0;i< g->vernum ;i++)
+	{
+		for(j = 0 ;j < g->vernum ;j++)
+		{
+			printf("%2d ",(*P)[i][j]);	
+		}
+		printf("\n");	
+	}
+}
 
 int main(int argc, char *argv[]) {
 	
+	Patharc P;
+	ShortPathTable D;
 	MAGraph *g = NULL; 
 	g = (MAGraph *)malloc(sizeof(MAGraph));
 	CreateDN(g);
 	MAGraphPrint(g);
 	ShortestPath(g, 0);
-	PrintPath(g);
+	PrintDijstraPath(g);
+	
+	ShortestPath_FLOYD(g, &P, &D);
+	PrintFLOYDPath(g, &P, &D);
 	return 0;
 }
